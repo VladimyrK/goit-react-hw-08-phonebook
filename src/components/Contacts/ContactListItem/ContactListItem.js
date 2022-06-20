@@ -1,19 +1,21 @@
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 
-import { deleteContact } from '../../../redux/contactsSlice';
+// import { deleteContact } from '../../../redux/contactsSlice';
+import { useDeleteContactMutation } from '../../../redux/contactsSlice';
 
 import './ContactListItem.module.css';
 
-function ContactListItem({ id, name, number }) {
-  const dispatch = useDispatch();
+function ContactListItem({ id, phone, name }) {
+  // const dispatch = useDispatch();
+  const [deleteTodo] = useDeleteContactMutation();
 
   return (
     <li>
       <p>
-        {name}: {number}
+        {name}: {phone}
       </p>
-      <button type="button" onClick={() => dispatch(deleteContact(id))}>
+      <button type="button" onClick={() => deleteTodo(id)}>
         Delete
       </button>
     </li>
@@ -22,7 +24,7 @@ function ContactListItem({ id, name, number }) {
 
 ContactListItem.propTypes = {
   id: PropTypes.string,
-  name: PropTypes.string,
+  phone: PropTypes.string,
   number: PropTypes.string,
 };
 

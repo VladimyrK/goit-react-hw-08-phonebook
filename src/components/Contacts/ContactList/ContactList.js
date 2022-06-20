@@ -6,8 +6,8 @@ import './ContactList.module.css';
 const ContactList = ({ items }) => {
   return (
     <ul>
-      {items.map(({ id, name, number }) => (
-        <ContactListItem key={id} id={id} name={name} number={number} />
+      {items.map(({ id, name, phone }) => (
+        <ContactListItem key={id} id={id} name={name} phone={phone} />
       ))}
     </ul>
   );

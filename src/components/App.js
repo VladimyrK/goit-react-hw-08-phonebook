@@ -1,22 +1,42 @@
 import { useSelector, useDispatch } from 'react-redux';
-
-import { addFilter, addContact } from '../redux/contactsSlice';
+import {
+  useFetchContactsQuery,
+  useCreateContactMutation,
+} from '../redux/contactsSlice';
+import { addFilter } from '../redux/filterSlice';
+import { toast, Toaster } from 'react-hot-toast';
 
 import ContactForm from './Contacts/ContactForm';
 import ContactList from './Contacts/ContactList';
 import Filter from './Contacts/Filter';
 
 function App() {
-  const contacts = useSelector(state => state.contacts.contacts);
-  const filter = useSelector(state => state.contacts.filter);
+  const { data: contacts } = useFetchContactsQuery();
+  const [createContact] = useCreateContactMutation();
+  const filter = useSelector(state => state.filter.filter);
   const dispatch = useDispatch();
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    createContact([
+      e.currentTarget.elements.name.value,
+      e.currentTarget.elements.phone.value,
+    ]);
+    e.currentTarget.reset();
+
+    toast.success('Заметка создана!');
+  };
 
   const filterContacts = () => {
     const filterToLowerCase = filter.toLowerCase();
 
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filterToLowerCase)
-    );
+    let filteredContacts = [];
+    if (contacts) {
+      filteredContacts = contacts.filter(contact =>
+        contact.name.toLowerCase().includes(filterToLowerCase)
+      );
+    }
+    return filteredContacts;
   };
 
   const filteredContacts = filterContacts();
@@ -24,13 +44,14 @@ function App() {
   return (
     <div className="App">
       <h1>Phonebook</h1>
-      <ContactForm onSubmit={e => dispatch(addContact(e))} />
+      <ContactForm onSubmit={handleSubmit} />
       <h2>Contacts</h2>
       <Filter
         value={filter}
         onFilter={e => dispatch(addFilter(e.currentTarget.value))}
       />
-      <ContactList items={filteredContacts} />
+      {contacts && <ContactList items={filteredContacts} />}
+      <Toaster position="top-center" />
     </div>
   );
 }

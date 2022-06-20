@@ -1,36 +1,39 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const initialState = {
-  contacts: JSON.parse(window.localStorage.getItem('contacts')) ?? [],
-  filter: '',
-};
-
-export const contactsSlice = createSlice({
-  name: 'contacts',
-  initialState,
-  reducers: {
-    addContact: (state, action) => {
-      state.contacts.find(
-        contact =>
-          contact.name.toLowerCase() === action.payload.name.toLowerCase()
-      )
-        ? alert('This name already in contacts')
-        : (state.contacts = [...state.contacts, action.payload]);
-      window.localStorage.setItem('contacts', JSON.stringify(state.contacts));
-    },
-    deleteContact: (state, action) => {
-      state.contacts = state.contacts.filter(
-        contact => contact.id !== action.payload
-      );
-      window.localStorage.setItem('contacts', JSON.stringify(state.contacts));
-    },
-    addFilter: (state, action) => {
-      state.filter = action.payload;
-    },
-  },
+export const contactsApi = createApi({
+  reducerPath: 'contactsApi',
+  baseQuery: fetchBaseQuery({
+    baseUrl: 'https://627a8aed4a5ef80e2c1c8254.mockapi.io/api/v1/',
+  }),
+  tagTypes: ['Contact'],
+  endpoints: builder => ({
+    fetchContacts: builder.query({
+      query: () => '/contacts',
+      providesTags: ['Contact'],
+    }),
+    deleteContact: builder.mutation({
+      query: contactId => ({
+        url: `/contacts/${contactId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Contact'],
+    }),
+    createContact: builder.mutation({
+      query: contactContent => ({
+        url: '/contacts',
+        method: 'POST',
+        body: {
+          name: contactContent[0],
+          phone: contactContent[1],
+        },
+      }),
+      invalidatesTags: ['Contact'],
+    }),
+  }),
 });
 
-// Action creators are generated for each case reducer function
-export const { addFilter, addContact, deleteContact } = contactsSlice.actions;
-
-export default contactsSlice.reducer;
+export const {
+  useFetchContactsQuery,
+  useDeleteContactMutation,
+  useCreateContactMutation,
+} = contactsApi;
