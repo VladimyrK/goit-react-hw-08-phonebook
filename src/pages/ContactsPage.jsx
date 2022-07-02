@@ -6,11 +6,11 @@ import {
 import { addFilter } from '../redux/filterSlice';
 import { toast, Toaster } from 'react-hot-toast';
 
-import ContactForm from './Contacts/ContactForm';
-import ContactList from './Contacts/ContactList';
-import Filter from './Contacts/Filter';
+import ContactForm from '../components/Contacts/ContactForm';
+import ContactList from '../components/Contacts/ContactList';
+import Filter from '../components/Contacts/Filter';
 
-function App() {
+function ContactsPage() {
   const { data: contacts } = useFetchContactsQuery();
   const [createContact] = useCreateContactMutation();
   const filter = useSelector(state => state.filter.filter);
@@ -56,4 +56,4 @@ function App() {
   );
 }
 
-export default App;
+export default ContactsPage;
