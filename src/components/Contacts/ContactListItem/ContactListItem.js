@@ -6,14 +6,14 @@ import { useDeleteContactMutation } from '../../../redux/contactsSlice';
 
 import './ContactListItem.module.css';
 
-function ContactListItem({ id, phone, name }) {
+function ContactListItem({ id, number, name }) {
   // const dispatch = useDispatch();
   const [deleteTodo] = useDeleteContactMutation();
 
   return (
     <li>
       <p>
-        {name}: {phone}
+        {name}: {number}
       </p>
       <button type="button" onClick={() => deleteTodo(id)}>
         Delete
@@ -24,7 +24,6 @@ function ContactListItem({ id, phone, name }) {
 
 ContactListItem.propTypes = {
   id: PropTypes.string,
-  phone: PropTypes.string,
   number: PropTypes.string,
 };
 
